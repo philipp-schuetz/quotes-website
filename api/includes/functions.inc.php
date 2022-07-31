@@ -182,3 +182,11 @@ function get_max_quoteid($conn) {
         return false;
     }
 }
+
+function uml_to_htmluml($string) {
+    $uml = array("Ä", "ä", "Ö", "ö", "Ü", "ü", "ß", "Ñ", "ñ");
+    $htmluml = array("&Auml;", "&auml;", "&Ouml;", "&ouml;", "&Uuml;", "&uuml;", "&szlig;", "&Ntilde;", "&ntilde;");
+
+    $newstring = str_replace($uml, $htmluml, $string);
+    return $newstring;
+}

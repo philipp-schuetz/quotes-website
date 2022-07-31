@@ -12,7 +12,7 @@ if (isset($_GET["auth"])) {
             if ($_GET["op"] == "c" && $permission >= 2) {
                 if (isset($_GET["content"])) {
                     if (strlen($_GET["content"]) <= 1024) {
-                        $content = $_GET["content"];
+                        $content = uml_to_htmluml($_GET["content"]);
                         if (isset($_GET["used_content"])) {
                             if ($_GET["used_content"] == $content) {
                                 http_response_code(100);
@@ -98,7 +98,7 @@ if (isset($_GET["auth"])) {
                         if (isset($_GET["content"])) {
                             if (strlen($_GET["content"]) <= 1024) {
                                 $quoteid = $_GET["quoteid"];
-                                $content = $_GET["content"];
+                                $content = uml_to_htmluml($_GET["content"]);
                                 if (update_quote($conn, $userid, $quoteid, $content) === true) {
                                     http_response_code(200);
                                     echo '{"status_code":200,"msg":"Quote was updated successfully."}';
