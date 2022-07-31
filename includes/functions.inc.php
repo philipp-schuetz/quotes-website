@@ -121,45 +121,6 @@ function signupUser($conn, $username, $password, $token)
         exit();
 }
 
-
-function getQuotes($conn, $quoteStartId, $quoteEndId, $count = false) {
-    if ($count === false) {
-        $sql = "SELECT quotes.quoteid, quotes.unix_timestamp, users.username userid, quotes.content FROM quotes JOIN users ON quotes.userid = users.userid WHERE quoteid >= " . $quoteStartId . " AND quoteid <= " . $quoteEndId . " ORDER BY quoteid ASC";
-    } else {
-        $sql = "SELECT quoteid FROM quotes";
-    }
-    $result = mysqli_query($conn, $sql);
-    if (mysqli_num_rows($result) > 0) {
-        return $result;
-    } else {
-        return false;
-    }
-}
-
-function getQuotesSearch($conn, $quoteStartId, $quoteEndId, $search) {
-    $param = "%{$search}%";
-
-    $sql = "SELECT quotes.quoteid, quotes.unix_timestamp, users.username userid, quotes.content FROM quotes JOIN users ON quotes.userid = users.userid WHERE content LIKE ? AND quoteid >= ? AND quoteid <= ?";
-
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        $_POST["error"] = "stmtfailed";
-        header("location: ../index.php");
-        exit();
-    } else {
-        mysqli_stmt_bind_param($stmt, "sii", $param, $quoteStartId, $quoteEndId);
-        mysqli_stmt_execute($stmt);
-
-        $result = mysqli_stmt_get_result($stmt);
-        if (mysqli_num_rows($result) > 0) {
-            return $result;
-        } else {
-            return false;
-        }
-    }
-    mysqli_stmt_close($stmt);
-}
-
 function getUserId($conn, $token) {
     $sql = "SELECT userid FROM users WHERE token = ?;";
     $stmt = mysqli_stmt_init($conn);
