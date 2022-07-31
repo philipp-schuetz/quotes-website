@@ -57,13 +57,14 @@ if (isset($_GET["auth"])) {
 
                                     $result = get_quote($conn, $quoteid, $count, $search);
                                     if ($result !== false) {
+                                        http_response_code(200);
                                         $result_arr = array(
                                             "statuscode"=>200,
                                             "data"=>array()
                                         );
                                         $i = 0;
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            $result_arr["data"][$i] = array("quoteid"=>$row["quoteid"], "username"=>$row["userid"], "unix_timestamp"=>$row["unix_timestamp"], "content"=>$row["content"]);
+                                            $result_arr["data"][$i] = array("quoteid"=>utf8_encode($row["quoteid"]), "username"=>utf8_encode($row["userid"]), "unix_timestamp"=>utf8_encode($row["unix_timestamp"]), "content"=>utf8_encode($row["content"]));
                                             $i = $i + 1;
                                         }
                                         echo json_encode($result_arr);
