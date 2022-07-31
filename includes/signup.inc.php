@@ -1,11 +1,11 @@
 <?php
+require_once 'dbh.inc.php';
+require_once 'functions.inc.php';
+
 if (isset($_POST["submit"])) {
     $username = $_POST["username"];
     $password = $_POST["password"];
-    $token = $_POST["token"];
-
-    require_once 'dbh.inc.php';
-    require_once 'functions.inc.php';
+    $token = randomStr(64);
 
     if (emptyInputLogin($username, $password) !== false) {
         $_POST["error"] = "emptyinput";

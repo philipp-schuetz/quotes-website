@@ -2,12 +2,12 @@
 require_once 'includes/dbh.inc.php';
 require_once 'includes/functions.inc.php';
 if (isset($_GET["token"])) {
-    if (cookieTokenExists($conn, $_GET["token"]) == false) {
+    $token = "";
+    if ($_GET["token"] != $token) {
         header("location: index.php");
         exit();
     }
 } else {
-    # TODO: check for group registration
     header("location: index.php");
     exit();
 }
@@ -49,7 +49,6 @@ if (isset($_GET["token"])) {
     <form action="includes/signup.inc.php" method="post">
         <input type="text" placeholder="Username" maxlength="16" name="username" required><br>
         <input type="password" placeholder="Password" maxlength="128" name="password" required><br>
-        <input type="hidden" name="token" value="<?php echo $_GET["token"]; ?>">
         <button type="submit" name="submit">Signup</button><br>
     </form>
 
