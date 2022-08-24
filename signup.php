@@ -47,6 +47,7 @@ if (isset($_GET["token"])) {
 </div>
 <div class="signup-form">
     <form action="includes/signup.inc.php" method="post">
+        <input type="hidden" name="token" value="<?php echo $token ?>">
         <input type="text" placeholder="Username" maxlength="16" name="username" required><br>
         <input type="password" placeholder="Password" maxlength="128" name="password" required><br>
         <button type="submit" name="submit">Signup</button><br>
@@ -55,9 +56,11 @@ if (isset($_GET["token"])) {
     <?php
     if (isset($_POST["error"])) {
         if ($_POST["error"] == "emptyinput") {
-            echo "Fill in all fields";
-        } else if ($_POST["error"] == "wronglogin") {
-            echo "Username or Password incorrect";
+            echo '<span style="color: red;">Fill in all fields</span>';
+        } else if ($_POST["error"] == "usernameexists") {
+            echo '<span style="color: red;">Username is alredy taken</span>';
+        } else if ($_POST["error"] == "stmtfailed") {
+            echo '<span style="color: red;">Something went wrong, please try again</span>';
         }
     }
     ?>

@@ -39,10 +39,10 @@
     </form>
 
     <?php
-    if (isset($_GET["error"])) {
-        if ($_GET["error"] == "emptyinput") {
+    if (isset($_POST["error"])) {
+        if ($_POST["error"] == "emptyinput") {
             echo "Fill in all fields";
-        } else if ($_GET["error"] == "wronglogin") {
+        } else if ($_POST["error"] == "wronglogin") {
             echo "Username or Password incorrect";
         }
     }

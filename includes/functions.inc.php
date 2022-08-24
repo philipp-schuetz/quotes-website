@@ -2,7 +2,6 @@
 
 function emptyInputLogin($username, $password)
 {
-    $result = true;
     if (empty($username) || empty($password)) {
         return true;
     } else {
@@ -83,35 +82,29 @@ function loginUser($conn, $username, $password)
     }
 }
 
-function signupUser($conn, $username, $password, $token)
+function signupUser($conn, $username, $password, $token, $group_token)
 {
 
     $usernameExists = usernameExists($conn, $username);
 
     if ($usernameExists !== false) {
-        $_GET["error"] = "usernameexists";
-        header("location: ../signup.php");
-        exit();
-    }
-    if ($usernameExists["token_used"] != 0) {
-        $_GET["error"] = "token_in_use";
-        header("location: ../login.php");
+        $_POST["error"] = "usernameexists";
+        header("location: ../signup.php?token=" . $group_token);
         exit();
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $tokenUsed = 1;
-    $sql = "UPDATE users SET users.username = ?, users.passwordhash = ?, users.token_used = ? WHERE users.token = ?";
+    $sql = "INSERT INTO users(username, passwordhash, token) VALUES (?, ?, ?)";
 
     $stmt = mysqli_stmt_init($conn);
 
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         $_POST["error"] = "stmtfailed";
-        header("location: ../signup.php");
+        header("location: ../signup.php?token=" . $group_token);
         exit();
     } else {
-        mysqli_stmt_bind_param($stmt, "ssis", $username, $hashedPassword, $tokenUsed, $token);
+        mysqli_stmt_bind_param($stmt, "sss", $username, $hashedPassword, $token);
 
         mysqli_stmt_execute($stmt);
 
@@ -141,13 +134,20 @@ function getUserId($conn, $token) {
     mysqli_stmt_close($stmt);
 }
 
-function randomStr(int $length)
+function randToken($conn)
 {
-    $keyspace = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    $pieces = [];
-    $max = mb_strlen($keyspace, '8bit') - 1;
-    for ($i = 0; $i < $length; ++$i) {
-        $pieces[] = $keyspace[random_int(0, $max)];
+    $token_exists = true;
+    while ($token_exists !== false) {
+        $length = 64;
+        $keyspace = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $pieces = [];
+        $max = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces[] = $keyspace[random_int(0, $max)];
+        }
+        $token = implode('', $pieces);
+
+        $token_exists = cookieTokenExists($conn, $token);
     }
-    return implode('', $pieces);
+    return $token;
 }
