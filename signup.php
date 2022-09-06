@@ -1,8 +1,11 @@
 <?php
 require_once 'includes/dbh.inc.php';
 require_once 'includes/functions.inc.php';
+
+$token_file = parse_ini_file("token.ini");
+
+$token = $token_file['token'];
 if (isset($_GET["token"])) {
-    $token = "";
     if ($_GET["token"] != $token) {
         header("location: index.php");
         exit();
